@@ -28,6 +28,7 @@ def parse_arguments():
         default=False,
         help="Reciprocal (e.g. 1.2 becomes 1/1.2 as the multiplier)"
     )
+
     return parser.parse_args()
 
 def get_sample_rate(input_path):
@@ -57,6 +58,7 @@ def get_sample_rate(input_path):
     except subprocess.CalledProcessError as e:
         print("ffprobe failed:", e.stderr.strip())
         return None
+
     except FileNotFoundError:
         print("Error: ffprobe not found. Is ffmpeg installed?")
         return None
@@ -78,11 +80,11 @@ def main():
     if reciprocal:
         speed = 1 / speed
 
-    sample_rate=get_sample_rate(input_path)
+    sample_rate = get_sample_rate(input_path)
     stem = input_path.stem
     suffix = f" [{speed}x]"
     speed_str = f"{1 / speed}" if reciprocal else f"{speed}"
-    output_path = input_path.with_name(stem + suffix + ".flac")
+    output_path = Path.cwd() / (stem + suffix + ".flac")
 
     ffmpeg_cmd = [
         "ffmpeg",
